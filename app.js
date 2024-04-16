@@ -27,7 +27,7 @@ const orderRouter = require('./routes/orderRoutes');
 //middleware
 const notFoundMiddleware = require('./middleware/not-found')
 const errorHandlerMiddleWare = require("./middleware/error-handler");
-// const stripeController = require('./controllers/orderController');
+
 
 app.set('trust proxy', 1)
 app.use(rateLimiter({
@@ -36,24 +36,16 @@ app.use(rateLimiter({
 }))
 // app.use(helmet());
 
-// app.use(helmet.contentSecurityPolicy({
-//   directives: {
-//     defaultSrc: ["'self'"],
-//     imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
-//     // Add more directives as needed based on your application's requirements
-//   }
-
-// }));
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      imgSrc: ["'self'", "*", "data:"],
-      // Add more directives as needed based on your application's requirements
-    },
-    dangerouslyDisableDefaultSrc: true // Disable the default-src directive
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "https://js.stripe.com"],
+    imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
+    // Add more directives as needed based on your application's requirements
   }
+
 }));
+
 
 app.use(cors({
   origin: 'http://localhost:5173',
