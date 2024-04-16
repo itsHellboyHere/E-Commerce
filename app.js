@@ -38,10 +38,10 @@ app.use(rateLimiter({
 
 app.use(helmet.contentSecurityPolicy({
   directives: {
-    defaultSrc: ["'self'", "https://js.stripe.com"],
+    defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173"],
     scriptSrc: ["'self'", "https://js.stripe.com"],
     imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
-    // Add more directives as needed based on your application's requirements
+    // Add more directives as needed based on the application's requirements
   }
 
 }));
@@ -79,11 +79,6 @@ app.use((req, res, next) => {
 
 //routes
 
-// app.get('/', (req, res) => {
-//   res.json({ msg: 'Welcome to e-comm api' });
-// 
-
-
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/products', productRouter);
@@ -91,7 +86,7 @@ app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/orders', orderRouter);
 
 
-
+// redirects
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
