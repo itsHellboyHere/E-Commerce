@@ -4,9 +4,11 @@ const { attachCookiesToResponse, createTokenUser, checkPermissions } = require('
 const Product = require('../models/Product')
 const Order = require('../models/Order')
 const User = require('../models/User')
-const stripe = require('stripe')(process.env.SECRET_KEY)
+// const stripe = require('stripe')(process.env.SECRET_KEY)
+const stripe = require("stripe")('sk_test_51P3DfASAPzvmDmqw85CRJ2kIwo2p6UUbzTYDtT0vmulLRDenoLmafKX2DSZNN5b2K2py3ILHJ22le09tg4mhoxzR00bVVZga1G');
 const stripeController = async ({ amount, currency }) => {
 
+    
     if (amount < 42) {
         throw new CustomError.BadRequestError('Order amount should be greater then 42 INR')
     }
@@ -119,6 +121,7 @@ const createOrder = async (req, res) => {
 
         const { name, price, image, _id, colors } = dbProduct;
 
+        console.log(price);
         let productColor;
 
         // Check if the cart item provides a color, otherwise use the first color from the product's colors array
@@ -149,7 +152,10 @@ const createOrder = async (req, res) => {
     }
     // console.log(orderItems ,subtotal);
     //fake stripe communication
-    const total = tax + shippingFee + subtotal;
+    const subtotalInPaise = subtotal * 100;
+    const taxInPaise = tax * 100;
+    const shippingFeeInPaise = shippingFee * 100;
+    const total = subtotalInPaise + taxInPaise + shippingFeeInPaise;
 
     //  Get user's name from the User model
     // const user = await User.findOne({ _id: req.user.userId });

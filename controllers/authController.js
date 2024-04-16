@@ -12,13 +12,13 @@ const register = async (req, res) => {
     }
     //first registered user is an admin
     const isFirstAccount = await User.countDocuments({}) === 0;
-    const role = isFirstAccount ? 'admin' : 'user';
+    const role = isFirstAccount ? 'seller' : 'user';
 
     const user = await User.create({ name, email, password, role });
     const tokenUser = createTokenUser(user);
     // const token=createJWT({payload: tokenUser});
 
-    attachCookiesToResponse({ res, user: tokenUser ,domain: '.e-commerce-api-fhux.onrender.com'});
+    attachCookiesToResponse({ res, user: tokenUser });
 
     res.status(StatusCodes.CREATED).json({ user: tokenUser })
 }

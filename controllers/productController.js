@@ -108,7 +108,7 @@ const getAllProducts = async (req, res) => {
             result = result.select(fieldsList);
         }
 
-        const products = await result;
+        const products = await result.sort('-createdAt');
         const total = await Product.countDocuments(queryObject); // Total number of products matching the query
         // Get distinct categories and companies
         const categories = await Product.distinct('category').lean();

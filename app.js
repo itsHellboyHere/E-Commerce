@@ -36,11 +36,22 @@ app.use(rateLimiter({
 }))
 // app.use(helmet());
 
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: ["'self'"],
-    imgSrc: ["'self'", "*"], // Add the img-src directive
-    // Add more directives as needed based on your application's requirements
+// app.use(helmet.contentSecurityPolicy({
+//   directives: {
+//     defaultSrc: ["'self'"],
+//     imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
+//     // Add more directives as needed based on your application's requirements
+//   }
+
+// }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "*", "data:"],
+      // Add more directives as needed based on your application's requirements
+    },
+    dangerouslyDisableDefaultSrc: true // Disable the default-src directive
   }
 }));
 
@@ -55,16 +66,9 @@ app.use(mongoSanitize())
 // app.use(morgan('tiny'))
 app.use(express.json()); //middleware to parse json data from request body
 app.use(cookieParser(process.env.JWT_SECRET)) // middleware for parsing cookies
-// Serve static files from the 'public/dist' directory
-app.use(express.static(path.join(__dirname, 'public', 'dist')));
 
-// Middleware to set MIME type for JavaScript files
-app.use((req, res, next) => {
-  if (req.url.endsWith('.js')) {
-    res.setHeader('Content-Type', 'application/javascript');
-  }
-  next();
-});
+// app.use(express.static(path.join(__dirname, 'public', 'dist')));
+
 
 app.use(express.static('./public'))
 // app.use(express.static(path.join(__dirname, 'public')));
