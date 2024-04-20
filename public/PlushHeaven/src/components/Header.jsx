@@ -19,7 +19,7 @@ const Header = () => {
     })
     if(response.status=== 200){
       console.log(response);
-         navigate('/')
+    navigate('/')
     dispatch(clearCart())
     dispatch(logoutUser())
     queryClient.removeQueries();
