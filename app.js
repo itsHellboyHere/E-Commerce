@@ -40,7 +40,7 @@ app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*"],
     scriptSrc: ["'self'", "https://js.stripe.com"],
-    styleSrc: ["'self'", "'unsafe-inline'",],
+    styleSrc: ["'self'", "'unsafe-inline'", "*"],
     imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
     // Add more directives as needed based on the application's requirements
   }
