@@ -15,7 +15,8 @@ const helmet = require('helmet')
 const xss = require('xss-clean')
 const mongoSanitize = require('express-mongo-sanitize')
 const cors = require('cors')
-
+const crypto = require('crypto');
+const nonce = crypto.randomBytes(16).toString('base64');
 //database 
 const connectDB = require('./db/connect');
 //roters 
@@ -36,16 +37,29 @@ app.use(rateLimiter({
 }))
 // app.use(helmet());
 
+// app.use(helmet.contentSecurityPolicy({
+//   directives: {
+//     defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*"],
+//     scriptSrc: ["'self'", "https://js.stripe.com"],
+//     styleSrc: ["'self'", "'unsafe-inline'", "*"],
+//     imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
+//     // Add more directives as needed based on the application's requirements
+//   }
+
+// }));
+
 app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*"],
     scriptSrc: ["'self'", "https://js.stripe.com"],
-    styleSrc: ["'self'", "'unsafe-inline'", "*"],
-    imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
+    styleSrc: ["'self'", `'nonce-${nonce}'`, "*"], // Use nonce for inline styles
+    imgSrc: ["'self'", "*", "data:"],
     // Add more directives as needed based on the application's requirements
-  }
-
+  },
+  reportOnly: true // Set to true to only report CSP violations
 }));
+
+
 
 
 app.use(cors({
