@@ -15,8 +15,7 @@ const helmet = require('helmet')
 const xss = require('xss-clean')
 const mongoSanitize = require('express-mongo-sanitize')
 const cors = require('cors')
-const crypto = require('crypto');
-const nonce = crypto.randomBytes(16).toString('base64');
+
 //database 
 const connectDB = require('./db/connect');
 //roters 
@@ -50,10 +49,10 @@ app.use(rateLimiter({
 
 app.use(helmet.contentSecurityPolicy({
   directives: {
-    defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*"],
-    scriptSrc: ["'self'", "https://js.stripe.com"],
-    styleSrc: ["'self'", `'nonce-${nonce}'`, "*"], // Use nonce for inline styles
-    imgSrc: ["'self'", "*", "data:"],
+    defaultSrc: ["", "https://js.stripe.com", "http://localhost:5173", "*"],
+    scriptSrc: ["", "https://js.stripe.com"],
+    styleSrc: ["", "'unsafe-inline'", "*"], // Use nonce for inline styles
+    imgSrc: [, "*", "data:"],
     // Add more directives as needed based on the application's requirements
   },
   reportOnly: true // Set to true to only report CSP violations
