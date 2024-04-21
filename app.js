@@ -38,7 +38,7 @@ app.use(rateLimiter({
 
 app.use(helmet.contentSecurityPolicy({
   directives: {
-    defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173"],
+    defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*"],
     scriptSrc: ["'self'", "https://js.stripe.com"],
     styleSrc: ["'self'", "'unsafe-inline'",],
     imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
