@@ -8,7 +8,7 @@ const User = require('../models/User')
 const stripe = require("stripe")('sk_test_51P3DfASAPzvmDmqw85CRJ2kIwo2p6UUbzTYDtT0vmulLRDenoLmafKX2DSZNN5b2K2py3ILHJ22le09tg4mhoxzR00bVVZga1G');
 const stripeController = async ({ amount, currency }) => {
 
-    
+
     if (amount < 42) {
         throw new CustomError.BadRequestError('Order amount should be greater then 42 INR')
     }
@@ -21,7 +21,7 @@ const stripeController = async ({ amount, currency }) => {
         metadata: { integration_check: 'accept_a_payment' },
     });
     const client_secret = paymentIntent.client_secret
-    console.log(paymentIntent);
+    // console.log(paymentIntent);
     return { client_secret, amount };
 };
 const getAllOrders = async (req, res) => {
@@ -195,6 +195,7 @@ const updateOrder = async (req, res) => {
         throw new CustomError.NotFoundError(`No order with id ${orderId} is present`)
     }
     checkPermissions(req.user, order.user)
+
     order.paymentIntentId = paymentIntentId;
 
     order.status = 'paid';
