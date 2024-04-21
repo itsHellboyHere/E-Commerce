@@ -36,27 +36,17 @@ app.use(rateLimiter({
 }))
 // app.use(helmet());
 
-// app.use(helmet.contentSecurityPolicy({
-//   directives: {
-//     defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*"],
-//     scriptSrc: ["'self'", "https://js.stripe.com"],
-//     styleSrc: ["'self'", "'unsafe-inline'", "*"],
-//     imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
-//     // Add more directives as needed based on the application's requirements
-//   }
-
-// }));
-
 app.use(helmet.contentSecurityPolicy({
   directives: {
-    defaultSrc: ["", "https://js.stripe.com", "http://localhost:5173", "*"],
-    scriptSrc: ["", "https://js.stripe.com"],
-    styleSrc: ["", "'unsafe-inline'", "*"], // Use nonce for inline styles
-    imgSrc: [, "*", "data:"],
+    defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*"],
+    scriptSrc: ["'self'", "https://js.stripe.com"],
+    styleSrc: ["'self'", "'unsafe-inline'", "*"],
+    imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
     // Add more directives as needed based on the application's requirements
-  },
-  reportOnly: true // Set to true to only report CSP violations
+  }
+
 }));
+
 
 
 
