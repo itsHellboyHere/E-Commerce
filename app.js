@@ -66,7 +66,7 @@ app.use(cookieParser(process.env.JWT_SECRET)) // middleware for parsing cookies
 // app.use(express.static(path.join(__dirname, 'public', 'dist')));
 
 
-// app.use(express.static('./public'))
+app.use(express.static('./public'))
 // app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload())
 // Serve static files from the 'dist' directory
