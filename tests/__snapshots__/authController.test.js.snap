@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`authController - login should login a user with correct credentials 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      {
+        "user": {},
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`authController - logout should logout a user 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      {
+        "msg": "user logged out!",
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`authController - register should register a new user 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      {
+        "user": {},
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
