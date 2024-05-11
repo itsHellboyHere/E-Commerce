@@ -41,7 +41,7 @@ app.use(helmet.contentSecurityPolicy({
     defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*"],
     scriptSrc: ["'self'", "https://js.stripe.com"],
     styleSrc: ["'self'", "'unsafe-inline'", "*"],
-    imgSrc: ["'self'", "*", "data:"], // Add the img-src directive
+    imgSrc: ["'self'", "*", "data:", "https://plushheaven.onrender.com"], // Add the img-src directive
     // Add more directives as needed based on the application's requirements
   }
 
