@@ -6,6 +6,7 @@ const path = require('path')
 const createProduct = async (req, res) => {
     req.body.user = req.user.userId;
     const product = await Product.create(req.body)
+
     res.status(StatusCodes.CREATED).json({ product });
 }
 
@@ -49,17 +50,7 @@ const getAllProducts = async (req, res) => {
             });
             queryObject.$and = filters;
         }
-        // if (priceRange) {
-        //     const [minPrice, maxPrice] = priceRange.split('-').map(Number);
-        //     queryObject.price = {};
-        //     if (!isNaN(minPrice)) {
-        //         queryObject.price.$gte = minPrice;
-        //     }
-        //     if (!isNaN(maxPrice)) {
-        //         queryObject.price.$lte = maxPrice;
-        //     }
-        // }
-        // let result = Product.find(queryObject);
+
         if (priceRange) {
             const [minPrice, maxPrice] = priceRange.split('-').map(Number);
             queryObject.price = {};
@@ -148,6 +139,7 @@ const updateProduct = async (req, res) => {
     if (!product) {
         throw new CustomError.NotFoundError(`No product with id : ${productId}`)
     }
+
     res.status(StatusCodes.OK).json({ product });
 }
 const deleteProduct = async (req, res) => {
