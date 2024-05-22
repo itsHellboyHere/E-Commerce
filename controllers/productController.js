@@ -98,7 +98,7 @@ const getAllProducts = async (req, res) => {
 
         // Pagination
         const page = Number(req.query.page) || 1;
-        const limit = Number(req.query.limit) || 10;
+        const limit = Number(req.query.limit) || 9;
         const skip = (page - 1) * limit;
         result = result.skip(skip).limit(limit);
 
@@ -113,6 +113,117 @@ const getAllProducts = async (req, res) => {
         // Get distinct categories and companies
         const categories = await Product.distinct('category').lean();
         const companies = await Product.distinct('company').lean();
+        categories.unshift('all');
+        companies.unshift('all');
+        const metadata = {
+            total,
+            page: page,
+            pageCount: Math.ceil(total / limit),
+            pageSize: limit,
+            categories: categories || [],
+            companies: companies || [],
+        };
+
+        res.status(200).json({ products, metadata });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+//get all seller products
+const getSellerProducts = async (req, res) => {
+    try {
+        const { featured, company, name, sort, fields, numericFilters, freeShipping, category, priceRange } = req.query;
+
+        const queryObject = { user: req.user.userId }; // Filter by seller's user ID
+
+        if (featured) {
+            queryObject.featured = featured === 'true';
+        }
+        if (freeShipping) {
+            queryObject.freeShipping = freeShipping === 'true';
+        }
+        if (company && company.toLowerCase() !== 'all') {
+            queryObject.company = company;
+        }
+        if (category && category.toLowerCase() !== 'all') {
+            queryObject.category = category;
+        }
+        if (name) {
+            queryObject.name = { $regex: name, $options: 'i' };
+        }
+        if (numericFilters) {
+            const operatorMap = {
+                '>': '$gt',
+                '>=': '$gte',
+                '=': '$eq',
+                '<': '$lt',
+                '<=': '$lte',
+            };
+            const regEx = /\b(<|>|>=|=|<|<=)\b/g;
+            let filters = numericFilters.replace(regEx, (match) => `-${operatorMap[match]}-`);
+            const options = ['price', 'rating'];
+            filters = filters.split(',').map((item) => {
+                const [field, operator, value] = item.split('-');
+                if (options.includes(field)) {
+                    return { [field]: { [operator]: Number(value) } };
+                }
+            });
+            queryObject.$and = filters;
+        }
+        if (priceRange) {
+            const [minPrice, maxPrice] = priceRange.split('-').map(Number);
+            queryObject.price = {};
+            if (!isNaN(minPrice)) {
+                queryObject.price.$gte = minPrice;
+            }
+            if (!isNaN(maxPrice)) {
+                queryObject.price.$lte = maxPrice;
+            }
+        }
+
+        let result = Product.find(queryObject);
+
+        // Sorting
+        if (sort) {
+            switch (sort) {
+                case 'a-z':
+                    result = result.sort({ name: 1 });
+                    break;
+                case 'z-a':
+                    result = result.sort({ name: -1 });
+                    break;
+                case 'high':
+                    result = result.sort({ price: -1 });
+                    break;
+                case 'low':
+                    result = result.sort({ price: 1 });
+                    break;
+                default:
+                    result = result.sort('createdAt');
+                    break;
+            }
+        } else {
+            result = result.sort('createdAt');
+        }
+
+        // Pagination
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 9;
+        const skip = (page - 1) * limit;
+        result = result.skip(skip).limit(limit);
+
+        // Select Fields
+        if (fields) {
+            const fieldsList = fields.split(',').join(' ');
+            result = result.select(fieldsList);
+        }
+
+        const products = await result.sort('-createdAt');
+        const total = await Product.countDocuments(queryObject); // Total number of products matching the query
+        // Get distinct categories and companies
+        const categories = await Product.distinct('category', { user: req.user.userId }).lean();
+        const companies = await Product.distinct('company', { user: req.user.userId }).lean();
         categories.unshift('all');
         companies.unshift('all');
         const metadata = {
@@ -154,12 +265,19 @@ const deleteProduct = async (req, res) => {
     const { id: productId } = req.params;
 
     const product = await Product.findOne({ _id: productId });
+
     if (!product) {
-        throw new CustomError.NotFoundError(`No product with id : ${productId}`)
+        throw new CustomError.NotFoundError(`No product with id : ${productId}`);
     }
+
+    // Check if the current user is the owner of the product
+    if (product.user.toString() !== req.user.userId) {
+        throw new CustomError.UnauthorizedError('Not authorized to delete this product');
+    }
+
     await product.remove();
-    res.status(StatusCodes.OK).json({ msg: 'Success Product removed.' })
-}
+    res.status(StatusCodes.OK).json({ msg: 'Success, product removed.' });
+};
 const uploadImage = async (req, res) => {
     console.log(req.files);
     if (!req.files) {
@@ -188,4 +306,5 @@ module.exports = {
     updateProduct,
     deleteProduct,
     uploadImage,
+    getSellerProducts,
 }

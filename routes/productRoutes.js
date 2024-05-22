@@ -9,12 +9,15 @@ const {
     updateProduct,
     deleteProduct,
     uploadImage,
+    getSellerProducts,
 } = require('../controllers/productController')
 
 router.route('/')
     .post([authenticateUser, authorizePermissions('seller')], createProduct)
     .get(getAllProducts);
 
+router.route('/seller')
+    .get([authenticateUser, authorizePermissions('seller')], getSellerProducts); // new route for seller-specific products
 router.route('/uploadImage')
     .post([authenticateUser, authorizePermissions('seller')], uploadImage);
 
