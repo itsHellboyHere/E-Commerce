@@ -12,7 +12,7 @@ const register = async (req, res) => {
     }
     //first registered user is an admin
     const isFirstAccount = await User.countDocuments({}) === 0;
-    const role = isFirstAccount ? 'seller' : 'user';
+    const role = isFirstAccount ? 'admin' : 'user';
 
     const user = await User.create({ name, email, password, role });
     const tokenUser = createTokenUser(user);
@@ -29,7 +29,8 @@ const registerSeller = async (req, res) => {
     if (emailAlreadyExists) {
         throw new CustomError.BadRequestError('Email already exists.')
     }
-    const role = 'seller';
+    const isFirstAccount = await User.countDocuments({}) === 0;
+    const role = isFirstAccount ? 'admin' : 'seller';
     const user = await User.create({ name, email, password, role });
 
     const tokenUser = createTokenUser(user)

@@ -25,14 +25,14 @@ describe('authController - register', () => {
         User.countDocuments.mockResolvedValue(0);
 
         // Mock the user object that would be created
-        const mockCreatedUser = { email: 'test@example.com', name: 'Test User', password: 'password', role: 'seller' };
+        const mockCreatedUser = { email: 'test@example.com', name: 'Test User', password: 'password', role: 'admin' };
         User.create.mockResolvedValue(mockCreatedUser);
 
         await register(mockReq, mockRes);
 
         expect(User.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
         expect(User.countDocuments).toHaveBeenCalled();
-        expect(User.create).toHaveBeenCalledWith({ ...mockReq.body, role: 'seller' }); // Include the role property
+        expect(User.create).toHaveBeenCalledWith({ ...mockReq.body, role: 'admin' }); // Include the role property
         expect(mockRes.status).toHaveBeenCalledWith(StatusCodes.CREATED);
         expect(mockRes.json).toHaveBeenCalledWith({ user: { /* mock token user */ } });
         expect(attachCookiesToResponse).toHaveBeenCalled();
