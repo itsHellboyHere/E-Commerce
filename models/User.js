@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const { func } = require('joi')
-
-
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,

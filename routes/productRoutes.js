@@ -17,11 +17,11 @@ router.route('/')
     .get(getAllProducts);
 
 router.route('/seller')
-    .get([authenticateUser, authorizePermissions('seller')], getSellerProducts); // new route for seller-specific products
+    // new route for seller-specific products
+    .get([authenticateUser, authorizePermissions('seller')], getSellerProducts); 
+    
 router.route('/uploadImage')
     .post([authenticateUser, authorizePermissions('seller')], uploadImage);
-
-
 router
     .route('/:id').get(getSingleProduct)
     .patch([authenticateUser, authorizePermissions('seller')], updateProduct)

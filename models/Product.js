@@ -4,7 +4,7 @@ const ProductSchema = new mongoose.Schema({
 
     name: {
         type: String,
-        trim: true,  // remove extra spaces from both sides of a string
+        trim: true,  
         required: [true, 'Please add a product name'],
         maxlength: [100, 'Name can not be more than 100 caharacters'],
     },
