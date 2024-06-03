@@ -24,11 +24,11 @@ const userRouter = require('./routes/userRoutes')
 const productRouter = require("./routes/productRoutes");
 const reviewRouter = require('./routes/reviewRoutes');
 const orderRouter = require('./routes/orderRoutes');
-//middleware
+
 const notFoundMiddleware = require('./middleware/not-found')
 const errorHandlerMiddleWare = require("./middleware/error-handler");
 
-
+//middleware
 app.set('trust proxy', 1)
 app.use(rateLimiter({
   windowMs: 15 * 60 * 1000,
@@ -38,7 +38,7 @@ app.use(rateLimiter({
 
 app.use(helmet.contentSecurityPolicy({
   directives: {
-    defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*"],
+    defaultSrc: ["'self'", "https://js.stripe.com", "http://localhost:5173", "*", "https://plushheaven.onrender.com"],
     scriptSrc: ["'self'", "https://js.stripe.com"],
     styleSrc: ["'self'", "'unsafe-inline'", "*"],
     imgSrc: ["'self'", "*", "data:", "https://plushheaven.onrender.com"], // Add the img-src directive
@@ -52,9 +52,10 @@ app.use(helmet.contentSecurityPolicy({
 
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'http://localhost:5000', 'https://plushheaven.onrender.com'], // Allow both localhost origins and your production origin
   credentials: true,
 }));
+
 
 app.use(xss())
 app.use(mongoSanitize())
@@ -70,8 +71,9 @@ app.use(express.static('./public'))
 
 app.use(fileUpload())
 // Serve static files from the 'dist' directory
-app.use(express.static(path.join(__dirname, 'dist')));
 
+app.use(express.static(path.join(__dirname, 'dist')));
+// app.use(express.static(path.join(__dirname, 'public')));
 // Middleware to set MIME type for JavaScript files
 app.use((req, res, next) => {
   if (req.url.endsWith('.js')) {
